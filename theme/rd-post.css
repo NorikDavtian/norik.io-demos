@@ -10,7 +10,7 @@
 /* Dark tokens also apply site-wide when the SiteFooter toggle sets
    data-theme="dark", so the shared chrome below can theme every page. */
 html[data-rd],
-html[data-theme="dark"] {
+html[data-scheme="dark"] {
     color-scheme: dark;
     --tc-serif: 'Instrument Serif', Georgia, serif;
     --tc-sans: 'Manrope', system-ui, -apple-system, sans-serif;
@@ -28,7 +28,7 @@ html[data-theme="dark"] {
     --btn-ink: #05010C; --btn-hover: #DDCCFF;
 }
 
-html[data-rd][data-theme="light"] {
+html[data-theme="light"] {
     color-scheme: light;
     --bg: #ffffff; --bg-rgb: 255, 255, 255;
     --accent: #59635e; --accent-rgb: 89, 99, 94;
@@ -43,11 +43,11 @@ html[data-rd][data-theme="light"] {
     --sel-bg: #ffe26e; --sel-ink: #000000;
     --btn-ink: #EAEAEA; --btn-hover: #404643;
 }
-html[data-rd][data-theme="light"] .rd-article i {
+html[data-rd][data-scheme="light"] .rd-article i {
     background: #ffe26e;
     color: #000;
 }
-html[data-rd][data-theme="light"] .rd-toc a.rd-on .rd-toc-label {
+html[data-rd][data-scheme="light"] .rd-toc a.rd-on .rd-toc-label {
     background: #ffe26e;
     color: #000;
 }
@@ -80,21 +80,21 @@ html[data-rd] #main-header {
 html[data-rd] #main-header .logo { color: #000; }
 /* No bar behind the chrome anymore, so dark theme needs light ink to stay
    visible on the dark canvas — on posts and everywhere else. */
-html[data-theme="dark"] #main-header .logo { color: var(--ink); }
-html[data-theme="dark"] #main-header .burger-menu i { background: var(--ink); }
+html[data-scheme="dark"] #main-header .logo { color: var(--ink); }
+html[data-scheme="dark"] #main-header .burger-menu i { background: var(--ink); }
 
 /* Overlay menu: site default — no re-skin on posts. Dark theme only swaps
    the palette: dark canvas, light links, inverted CTA (site-wide). */
-html[data-theme="dark"] #main-nav { background: var(--bg); }
-html[data-theme="dark"] #main-nav a.text-xl { color: var(--ink); }
-html[data-theme="dark"] #main-nav a.bg-black { background: #fff; color: #000; }
+html[data-scheme="dark"] #main-nav { background: var(--bg); }
+html[data-scheme="dark"] #main-nav a.text-xl { color: var(--ink); }
+html[data-scheme="dark"] #main-nav a.bg-black { background: #fff; color: #000; }
 
 /* The sideways "Business . Technology . Strategy" tag stays off post pages. */
 html[data-rd] .services { display: none; }
 
 /* The universal SiteFooter (newsletter + socials + theme pill) recolors on
    posts and on any dark-theme page — both define the rd tokens. */
-:is(html[data-rd], html[data-theme="dark"]) #newsletter-section {
+:is(html[data-rd], html[data-scheme="dark"]) #newsletter-section {
     border-color: rgba(var(--line-rgb), 0.16);
     border-left: 0;
     border-right: 0;
@@ -102,23 +102,23 @@ html[data-rd] .services { display: none; }
 }
 /* Subscribe button follows the theme ink like every other button: the site's
    double hard-corner square, inverted on the dark canvas. */
-:is(html[data-rd], html[data-theme="dark"]) #newsletter-section .btn { box-shadow: 0 0 0 2px var(--ink); }
-:is(html[data-rd], html[data-theme="dark"]) #newsletter-section .btn span {
+:is(html[data-rd], html[data-scheme="dark"]) #newsletter-section .btn { box-shadow: 0 0 0 2px var(--ink); }
+:is(html[data-rd], html[data-scheme="dark"]) #newsletter-section .btn span {
     background: var(--ink);
     color: var(--bg);
     box-shadow: 0 0 0 2px var(--ink);
 }
-:is(html[data-rd], html[data-theme="dark"]) #newsletter-section h2 { color: var(--ink); }
+:is(html[data-rd], html[data-scheme="dark"]) #newsletter-section h2 { color: var(--ink); }
 /* !important: these must beat the input's Tailwind utility classes
    (text-neutral-900 / border-neutral-300), which win in the compiled order. */
-:is(html[data-rd], html[data-theme="dark"]) #newsletter-section input {
+:is(html[data-rd], html[data-scheme="dark"]) #newsletter-section input {
     color: var(--ink) !important;
     border-color: rgba(var(--line-rgb), 0.35) !important;
 }
-:is(html[data-rd], html[data-theme="dark"]) .wave-container { background: transparent; }
-:is(html[data-rd], html[data-theme="dark"]) #site-footer { color: var(--rd-body); }
-:is(html[data-rd], html[data-theme="dark"]) #site-footer .footer-logo { color: var(--chrome); }
-:is(html[data-rd], html[data-theme="dark"]) #site-footer .social a { color: var(--rd-body); }
+:is(html[data-rd], html[data-scheme="dark"]) .wave-container { background: transparent; }
+:is(html[data-rd], html[data-scheme="dark"]) #site-footer { color: var(--rd-body); }
+:is(html[data-rd], html[data-scheme="dark"]) #site-footer .footer-logo { color: var(--chrome); }
+:is(html[data-rd], html[data-scheme="dark"]) #site-footer .social a { color: var(--rd-body); }
 
 /* ---- hero -------------------------------------------------------------- */
 .rd-hero { position: relative; overflow: hidden; }
@@ -272,7 +272,7 @@ video.rd-hero-media { object-fit: cover; min-width: 100%; }
     color: #ffffff;
     text-shadow: 0 2px 24px rgba(5, 1, 12, 0.55);
 }
-html[data-rd][data-theme="light"] .rd-hero--overlap .rd-title {
+html[data-rd][data-scheme="light"] .rd-hero--overlap .rd-title {
     color: var(--ink);
     text-shadow: 0 2px 24px rgba(255, 255, 255, 0.65);
 }
@@ -334,53 +334,61 @@ html[data-rd][data-theme="light"] .rd-hero--overlap .rd-title {
     background: rgba(var(--accent-rgb), 0.28);
     text-decoration-color: var(--accent);
 }
-/* CTA pill from the design ("Open the studio →") — add class="rd-cta" to a
+/* CTA button — the site's language: black block, hard corners, offset
+   double-square frame (ink/bg invert per theme). Add class="rd-cta" to a
    link in post content. */
 .rd-article a.rd-cta {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--accent);
-    color: var(--btn-ink);
+    background: var(--ink);
+    color: var(--bg);
     font-weight: 700;
     font-size: 14.5px;
     letter-spacing: 0.01em;
     padding: 13px 28px;
-    border-radius: 999px;
+    border-radius: 0;
     text-decoration: none;
-    box-shadow: -5px 5px 0 -1.5px rgba(var(--bg-rgb), 1), -5px 5px 0 0 var(--accent);
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.15s ease-out;
+    box-shadow: -5px 5px 0 -2px var(--bg), -5px 5px 0 0 var(--ink);
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
 }
 .rd-article a.rd-cta:hover {
-    background: var(--btn-hover);
-    color: var(--btn-ink);
+    background: var(--ink);
+    color: var(--bg);
     transform: translate(-2px, 2px);
-    box-shadow: -3px 3px 0 -1.5px rgba(var(--bg-rgb), 1), -3px 3px 0 0 var(--accent);
+    box-shadow: -3px 3px 0 -2px var(--bg), -3px 3px 0 0 var(--ink);
 }
 .rd-article a.rd-cta:active {
     transform: translate(-5px, 5px);
-    box-shadow: 0 0 0 -1.5px rgba(var(--bg-rgb), 1), 0 0 0 0 var(--accent);
+    box-shadow: 0 0 0 -2px var(--bg), 0 0 0 0 var(--ink);
 }
 
 /* Image links get none of the text-link chrome — no tint, padding, or
    underline peeking out around the image. */
 .rd-article a:has(img),
-html[data-rd][data-theme="light"] .rd-article a:has(img) {
+html[data-rd][data-scheme="light"] .rd-article a:has(img) {
     background: none;
     padding: 0;
     border-radius: 0;
     text-decoration: none;
 }
 /* Light theme: the highlighter-yellow family instead of the lilac tint. */
-html[data-rd][data-theme="light"] .rd-article a {
+html[data-rd][data-scheme="light"] .rd-article a {
     color: var(--ink);
     background: rgba(255, 226, 110, 0.4);
     text-decoration-color: #ffd94d;
 }
-html[data-rd][data-theme="light"] .rd-article a:hover {
+html[data-rd][data-scheme="light"] .rd-article a:hover {
     background: #ffe26e;
     color: #000;
     text-decoration-color: #ffd94d;
+}
+/* The yellow link tint must not win over the CTA block in light theme. */
+html[data-rd][data-scheme="light"] .rd-article a.rd-cta,
+html[data-rd][data-scheme="light"] .rd-article a.rd-cta:hover {
+    background: var(--ink);
+    color: var(--bg);
+    text-decoration: none;
 }
 
 .rd-article p { margin: 1.4em 0; line-height: 1.78; }

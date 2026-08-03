@@ -16,10 +16,11 @@ project, fully bundled.
 
 You are looking at the Refracted Descent blog theme. To apply it to a site:
 
-- `rd-post.css` is the complete stylesheet. All rules are scoped under
-  `html[data-rd]`; set that attribute on the root element, plus
-  `data-theme="dark"` or `data-theme="light"` (tokens for both palettes are
-  defined; dark is the default aesthetic).
+- `rd-post.css` is the complete stylesheet; `rd-themes.css` adds 20 extra
+  palettes. Scope: set `data-rd` on the root element, `data-theme="<id>"`
+  for the palette (dark, light, coppernight, catppuccin, ...), and
+  `data-scheme="dark"` or `"light"` to drive the structural dark/light
+  rules (menus, buttons, canvas).
 - Tokens are CSS custom properties on `html[data-rd]` — colors
   (`--bg`, `--ink`, `--accent: #BB9AF7`, `--line-rgb`, …) and type stacks
   (`--tc-serif: Instrument Serif`, `--tc-sans: Manrope`,
