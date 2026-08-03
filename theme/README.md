@@ -8,3 +8,6 @@ demo frames.
 Shared in: [How I built this](https://norik.io/posts/how-i-built-this)
 
 Specimen (self-contained page): https://demos.norik.io/theme/
+
+`standalone.html` is the original design mock exported from the Claude Design
+project, fully bundled.
