@@ -39,10 +39,5 @@
       '  <a class="demo-shell-back" href="https://norik.io">norik.io &rarr;</a>' +
       '</header>'
     ));
-    document.body.append(el(
-      '<footer class="demo-shell-footer">' +
-      '  <a href="https://norik.io">Norik.io</a> &middot; Business . Technology . Strategy' +
-      '</footer>'
-    ));
   });
 })();
