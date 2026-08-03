@@ -1,5 +1,6 @@
 # Refracted Descent theme
-<img width="1386" height="799" alt="image" src="https://github.com/user-attachments/assets/cbf37317-c9da-4029-a12d-0d9999aac0ab" />
+<img width="1381" height="792" alt="image" src="https://github.com/user-attachments/assets/6950bf17-53bc-419e-9489-be8accd84d0b" />
+
 
 `rd-post.css` is the blog theme from [norik.io](https://norik.io) — tokens,
 hero variants, 22 palettes, spec-card code blocks, and the LIVE PREVIEW
