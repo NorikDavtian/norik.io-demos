@@ -1,0 +1,50 @@
+/* Minimal chrome for demo pages — dark canvas from the blog theme. */
+:root { color-scheme: dark; }
+html, body {
+  margin: 0;
+  background:
+    radial-gradient(1100px 600px at 82% -10%, rgba(129, 77, 222, 0.22), transparent 60%),
+    #05010C;
+  background-attachment: fixed;
+  color: #c9c1e2;
+  font-family: system-ui, sans-serif;
+}
+.demo-shell-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+}
+.demo-shell-logo {
+  color: #DECCFF;
+  text-decoration: none;
+  display: inline-flex;
+}
+.demo-shell-logo svg { height: 26px; width: auto; }
+.demo-shell-tag {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8f86ad;
+}
+.demo-shell-back {
+  margin-left: auto;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #ece5fd;
+  text-decoration: none;
+}
+.demo-shell-back:hover { text-decoration: underline; }
+.demo-shell-footer {
+  padding: 40px 24px 28px;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8f86ad;
+}
+.demo-shell-footer a { color: #ece5fd; text-decoration: none; }
+.demo-shell-footer a:hover { text-decoration: underline; }

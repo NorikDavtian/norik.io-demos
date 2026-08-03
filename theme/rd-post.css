@@ -1,0 +1,837 @@
+/* ============================================================================
+   Refracted Descent blog theme — post pages only.
+   Every rule is keyed under html[data-rd], which pages/posts/[id].vue sets on
+   mount and removes on unmount, so none of this touches the rest of the site.
+   Tokens and layout come from the Claude Design project "Refracted Descent
+   Redesign" (Refracted Descent.dc.html + Hero Options.dc.html).
+   ========================================================================== */
+
+/* ---- tokens ------------------------------------------------------------ */
+/* Dark tokens also apply site-wide when the SiteFooter toggle sets
+   data-theme="dark", so the shared chrome below can theme every page. */
+html[data-rd],
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --tc-serif: 'Instrument Serif', Georgia, serif;
+    --tc-sans: 'Manrope', system-ui, -apple-system, sans-serif;
+    --tc-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+    --bg: #05010C; --bg-rgb: 5, 1, 12;
+    --accent: #BB9AF7; --accent-rgb: 187, 154, 247;
+    --accent-deep: #814DDE; --glow-rgb: 129, 77, 222;
+    --line-rgb: 194, 184, 255;
+    --ink: #ffffff; --ink-hi: #f2ecff; --em: #DDCCFF;
+    --rd-body: #c9c1e2; --link: #ece5fd; --label: #ddd6f2;
+    --mono-val: #d8d1ee; --note-link: #cbbfe8; --meta-hi: #b8b0d4;
+    --note: #a49cc0; --dim: #8f86ad; --num: #83799f; --faint: #6B578F;
+    --bar: #C2B8FF; --chrome: #DECCFF;
+    --sel-bg: #ffffff; --sel-ink: #05010C;
+    --btn-ink: #05010C; --btn-hover: #DDCCFF;
+}
+
+html[data-rd][data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff; --bg-rgb: 255, 255, 255;
+    --accent: #59635e; --accent-rgb: 89, 99, 94;
+    --accent-deep: #262827; --glow-rgb: 133, 147, 140;
+    --line-rgb: 38, 40, 39;
+    --ink: #262827; --ink-hi: #1d1f1e; --em: #262827;
+    --rd-body: #3f4241; --link: #262827; --label: #333534;
+    --mono-val: #4a514d; --note-link: #4a514d; --meta-hi: #505854;
+    --note: #555e59; --dim: #67726c; --num: #7b8882; --faint: #818e87;
+    --bar: #85938c; --chrome: #262827;
+    /* The site's classic yellow highlighter carries over to light theme. */
+    --sel-bg: #ffe26e; --sel-ink: #000000;
+    --btn-ink: #EAEAEA; --btn-hover: #404643;
+}
+html[data-rd][data-theme="light"] .rd-article i {
+    background: #ffe26e;
+    color: #000;
+}
+html[data-rd][data-theme="light"] .rd-toc a.rd-on .rd-toc-label {
+    background: #ffe26e;
+    color: #000;
+}
+
+/* ---- page canvas (overrides the site-wide light pin) ------------------- */
+html[data-rd],
+html[data-rd] body {
+    background:
+        radial-gradient(1100px 600px at 82% -10%, rgba(var(--glow-rgb), 0.22), transparent 60%),
+        radial-gradient(900px 480px at -5% 108%, rgba(var(--glow-rgb), 0.1), transparent 55%),
+        var(--bg);
+    background-attachment: fixed;
+    color: var(--rd-body);
+    font-family: var(--tc-sans);
+}
+
+html[data-rd] ::selection { background: var(--sel-bg); color: var(--sel-ink); text-shadow: none; }
+
+/* ---- site chrome ------------------------------------------------------- */
+/* The header keeps the site's default look on posts: in-flow, black logo,
+   black burger — same as everywhere else, on the page canvas. (z-index above
+   the z-50 overlay nav so the burger keeps its morph-to-X and stays
+   clickable.) */
+html[data-rd] #main-header {
+    position: relative;
+    z-index: 100;
+    background: transparent;
+    border: 0;
+}
+html[data-rd] #main-header .logo { color: #000; }
+/* No bar behind the chrome anymore, so dark theme needs light ink to stay
+   visible on the dark canvas — on posts and everywhere else. */
+html[data-theme="dark"] #main-header .logo { color: var(--ink); }
+html[data-theme="dark"] #main-header .burger-menu i { background: var(--ink); }
+
+/* Overlay menu: site default — no re-skin on posts. Dark theme only swaps
+   the palette: dark canvas, light links, inverted CTA (site-wide). */
+html[data-theme="dark"] #main-nav { background: var(--bg); }
+html[data-theme="dark"] #main-nav a.text-xl { color: var(--ink); }
+html[data-theme="dark"] #main-nav a.bg-black { background: #fff; color: #000; }
+
+/* The sideways "Business . Technology . Strategy" tag stays off post pages. */
+html[data-rd] .services { display: none; }
+
+/* The universal SiteFooter (newsletter + socials + theme pill) recolors on
+   posts and on any dark-theme page — both define the rd tokens. */
+:is(html[data-rd], html[data-theme="dark"]) #newsletter-section {
+    border-color: rgba(var(--line-rgb), 0.16);
+    border-left: 0;
+    border-right: 0;
+    margin-top: 96px;
+}
+/* Subscribe button follows the theme ink like every other button: the site's
+   double hard-corner square, inverted on the dark canvas. */
+:is(html[data-rd], html[data-theme="dark"]) #newsletter-section .btn { box-shadow: 0 0 0 2px var(--ink); }
+:is(html[data-rd], html[data-theme="dark"]) #newsletter-section .btn span {
+    background: var(--ink);
+    color: var(--bg);
+    box-shadow: 0 0 0 2px var(--ink);
+}
+:is(html[data-rd], html[data-theme="dark"]) #newsletter-section h2 { color: var(--ink); }
+/* !important: these must beat the input's Tailwind utility classes
+   (text-neutral-900 / border-neutral-300), which win in the compiled order. */
+:is(html[data-rd], html[data-theme="dark"]) #newsletter-section input {
+    color: var(--ink) !important;
+    border-color: rgba(var(--line-rgb), 0.35) !important;
+}
+:is(html[data-rd], html[data-theme="dark"]) .wave-container { background: transparent; }
+:is(html[data-rd], html[data-theme="dark"]) #site-footer { color: var(--rd-body); }
+:is(html[data-rd], html[data-theme="dark"]) #site-footer .footer-logo { color: var(--chrome); }
+:is(html[data-rd], html[data-theme="dark"]) #site-footer .social a { color: var(--rd-body); }
+
+/* ---- hero -------------------------------------------------------------- */
+.rd-hero { position: relative; overflow: hidden; }
+.rd-eyebrow {
+    font-family: var(--tc-mono);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+.rd-title {
+    font-family: var(--tc-serif);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+.rd-title em { font-style: italic; letter-spacing: 0; }
+.rd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: baseline;
+    font-family: var(--tc-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+.rd-meta .rd-dot { color: var(--accent); font-size: 9px; }
+.rd-hero-media {
+    position: absolute;
+    left: 50%; top: 0;
+    height: 100%; width: auto;
+    max-width: none;
+    transform: translate3d(-50%, 0, 0);
+    will-change: transform;
+}
+video.rd-hero-media { object-fit: cover; min-width: 100%; }
+
+/* backdrop — full-bleed image, centered title over it */
+.rd-hero--backdrop {
+    min-height: clamp(540px, 94vh, 920px);
+    display: flex;
+    flex-direction: column;
+}
+.rd-hero--backdrop .rd-scrim { display: none; }
+.rd-hero--backdrop .rd-hero-copy {
+    position: relative; z-index: 2; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+    padding: clamp(24px, 4vw, 44px) 20px clamp(56px, 9vh, 96px);
+}
+.rd-hero--backdrop .rd-eyebrow, .rd-hero--overlap .rd-eyebrow { color: #b8b0d4; }
+.rd-hero--backdrop .rd-title {
+    font-size: clamp(42px, 9.5vw, 122px);
+    margin: 28px auto 0;
+    max-width: 980px;
+    color: #ffffff;
+}
+.rd-hero--backdrop .rd-meta { justify-content: center; margin-top: 30px; color: #b8b0d4; }
+.rd-hero--backdrop .rd-meta .rd-dot, .rd-hero--overlap .rd-meta .rd-dot { color: #BB9AF7; }
+
+/* classic — image band, then title below on the page canvas */
+.rd-hero--classic { padding-top: 0; }
+.rd-hero--classic .rd-band {
+    position: relative;
+    height: clamp(320px, 58vh, 640px);
+    overflow: hidden;
+}
+/* Cover the full band width with ~15% overflow so the sideways parallax
+   pan has a budget to move within. */
+.rd-hero--classic .rd-band .rd-hero-media {
+    width: 115%;
+    min-width: 115%;
+    height: 100%;
+    object-fit: cover;
+}
+.rd-hero--classic .rd-hero-copy { text-align: center; padding: clamp(30px, 5vh, 48px) 24px 0; }
+.rd-hero--classic .rd-eyebrow, .rd-hero--plate .rd-eyebrow, .rd-hero--split .rd-eyebrow { color: var(--dim); }
+.rd-hero--classic .rd-title, .rd-hero--plate .rd-title {
+    font-size: clamp(38px, 6.5vw, 76px);
+    margin: 16px auto 0;
+    color: var(--ink);
+}
+.rd-hero--classic .rd-meta, .rd-hero--plate .rd-meta { justify-content: center; margin-top: 18px; color: var(--meta-hi); }
+
+/* split — title panel left, image column right */
+.rd-hero--split { min-height: clamp(540px, 94vh, 920px); display: flex; }
+.rd-hero--split .rd-split-copy {
+    width: 35%; flex: none;
+    display: flex; flex-direction: column; justify-content: center;
+    box-sizing: border-box;
+    padding: 96px clamp(26px, 4vw, 64px) 48px;
+}
+.rd-hero--split .rd-title { font-size: clamp(36px, 4vw, 60px); line-height: 1.06; color: var(--ink); }
+.rd-hero--split .rd-meta { margin-top: 22px; color: var(--meta-hi); display: block; line-height: 2; }
+.rd-hero--split .rd-split-media { flex: 1; position: relative; overflow: hidden; }
+@media (max-width: 899px) {
+    .rd-hero--split { flex-direction: column; min-height: 0; }
+    .rd-hero--split .rd-split-copy { width: 100%; padding-top: 96px; }
+    .rd-hero--split .rd-split-media { min-height: 46vh; }
+}
+
+/* plate — quiet type first, image as a framed print below */
+.rd-hero--plate { padding-top: 28px; }
+.rd-hero--plate .rd-hero-copy { text-align: center; padding: 0 24px; }
+.rd-hero--plate .rd-plate { max-width: 1240px; margin: clamp(28px, 5vh, 44px) auto 0; padding: 0 clamp(24px, 5vw, 44px); }
+.rd-hero--plate .rd-plate img,
+.rd-hero--plate .rd-plate video {
+    display: block; width: 100%; height: auto;
+    border: 1px solid rgba(var(--line-rgb), 0.24);
+}
+.rd-hero--plate .rd-plate-caption {
+    display: flex; justify-content: space-between; gap: 16px;
+    font-family: var(--tc-mono);
+    font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint);
+    margin-top: 8px;
+}
+
+/* overlap — image band up top, huge title breaking out of it */
+.rd-hero--overlap .rd-band {
+    position: relative;
+    height: clamp(340px, 62vh, 680px);
+    overflow: hidden;
+}
+/* Cover the full band width with ~15% overflow so the sideways parallax
+   pan has a budget to move within. */
+.rd-hero--overlap .rd-band .rd-hero-media {
+    width: 115%;
+    min-width: 115%;
+    height: 100%;
+    object-fit: cover;
+}
+.rd-hero--overlap .rd-band .rd-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(5,1,12,0.55) 0%, rgba(5,1,12,0.1) 45%, rgba(5,1,12,0.4) 100%);
+}
+.rd-hero--overlap .rd-hero-copy {
+    position: relative;
+    max-width: 1080px;
+    margin: clamp(-46px, -6vw, -72px) auto 0;
+    padding: clamp(20px, 3vw, 32px) clamp(24px, 5vw, 64px) 0;
+    /* Solid page-canvas plate so the title breaks out of the image cleanly. */
+    background: var(--bg);
+    text-align: center;
+}
+.rd-hero--overlap .rd-meta { justify-content: center; }
+.rd-hero--overlap .rd-title {
+    font-size: clamp(48px, 8.5vw, 108px);
+    line-height: 0.94;
+    color: #ffffff;
+    text-shadow: 0 2px 24px rgba(5, 1, 12, 0.55);
+}
+html[data-rd][data-theme="light"] .rd-hero--overlap .rd-title {
+    color: var(--ink);
+    text-shadow: 0 2px 24px rgba(255, 255, 255, 0.65);
+}
+.rd-hero--overlap .rd-meta { margin-top: 20px; color: var(--meta-hi); }
+.rd-hero--overlap .rd-eyebrow { margin-top: 14px; }
+
+/* ---- table of contents ------------------------------------------------- */
+.rd-toc {
+    position: fixed;
+    left: 44px; top: 200px;
+    width: 240px;
+    z-index: 40;
+}
+.rd-toc-head {
+    font-family: var(--tc-mono);
+    font-size: 10px; letter-spacing: 0.24em;
+    color: var(--faint);
+    margin-bottom: 16px;
+}
+.rd-toc a {
+    display: flex; gap: 10px; align-items: baseline;
+    margin: 0 0 10px;
+    text-decoration: none;
+    font-family: var(--tc-mono);
+    font-size: 11px; letter-spacing: 0.02em;
+    color: var(--dim);
+}
+.rd-toc a:hover { color: var(--ink); background: transparent; }
+.rd-toc a .rd-toc-num { font-size: 10px; color: var(--faint); }
+.rd-toc a .rd-toc-label { padding: 1px 4px; border-radius: 3px; }
+.rd-toc a.rd-on { color: var(--ink); font-weight: 700; }
+.rd-toc a.rd-on .rd-toc-label { background: rgba(var(--accent-rgb), 0.22); }
+
+/* ---- article ----------------------------------------------------------- */
+.rd-article {
+    max-width: 664px;
+    margin: clamp(56px, 9vw, 84px) auto 0;
+    padding: 0 24px;
+    font-size: 17.5px;
+    line-height: 1.78;
+    text-wrap: pretty;
+    font-weight: 400;
+    counter-reset: rd-sec;
+}
+.rd-article a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--accent-rgb), 0.6);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    /* Slight resting tint so links read as marked without being loud. */
+    background: rgba(var(--accent-rgb), 0.13);
+    padding: 1px 4px;
+    border-radius: 3px;
+    transition: background 0.15s ease-out, color 0.15s ease-out, text-decoration-color 0.15s ease-out;
+}
+.rd-article a:hover {
+    color: var(--ink);
+    background: rgba(var(--accent-rgb), 0.28);
+    text-decoration-color: var(--accent);
+}
+/* CTA pill from the design ("Open the studio →") — add class="rd-cta" to a
+   link in post content. */
+.rd-article a.rd-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: var(--btn-ink);
+    font-weight: 700;
+    font-size: 14.5px;
+    letter-spacing: 0.01em;
+    padding: 13px 28px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: -5px 5px 0 -1.5px rgba(var(--bg-rgb), 1), -5px 5px 0 0 var(--accent);
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.15s ease-out;
+}
+.rd-article a.rd-cta:hover {
+    background: var(--btn-hover);
+    color: var(--btn-ink);
+    transform: translate(-2px, 2px);
+    box-shadow: -3px 3px 0 -1.5px rgba(var(--bg-rgb), 1), -3px 3px 0 0 var(--accent);
+}
+.rd-article a.rd-cta:active {
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0 0 -1.5px rgba(var(--bg-rgb), 1), 0 0 0 0 var(--accent);
+}
+
+/* Image links get none of the text-link chrome — no tint, padding, or
+   underline peeking out around the image. */
+.rd-article a:has(img),
+html[data-rd][data-theme="light"] .rd-article a:has(img) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    text-decoration: none;
+}
+/* Light theme: the highlighter-yellow family instead of the lilac tint. */
+html[data-rd][data-theme="light"] .rd-article a {
+    color: var(--ink);
+    background: rgba(255, 226, 110, 0.4);
+    text-decoration-color: #ffd94d;
+}
+html[data-rd][data-theme="light"] .rd-article a:hover {
+    background: #ffe26e;
+    color: #000;
+    text-decoration-color: #ffd94d;
+}
+
+.rd-article p { margin: 1.4em 0; line-height: 1.78; }
+.rd-article > .rd-content > p:first-child {
+    margin-top: 0;
+    font-size: 1.18em;
+    line-height: 1.62;
+    color: var(--ink-hi);
+}
+
+.rd-article h2 {
+    position: relative;
+    font-family: var(--tc-serif);
+    font-weight: 400;
+    font-size: clamp(26px, 3.6vw, 40px);
+    line-height: 1.12;
+    color: var(--ink);
+    border-top: 1px solid rgba(var(--line-rgb), 0.16);
+    margin: 72px 0 0;
+    padding: 22px 64px 0 0;
+    counter-increment: rd-sec;
+    scroll-margin-top: 40px;
+    clear: both;
+}
+.rd-article h2::after {
+    content: counter(rd-sec, decimal-leading-zero);
+    position: absolute;
+    right: 0; top: 26px;
+    font-family: var(--tc-mono);
+    font-size: 11px;
+    color: var(--num);
+    letter-spacing: 0.16em;
+}
+.rd-article h3 {
+    font-family: var(--tc-serif);
+    font-weight: 400;
+    font-size: 1.45em;
+    color: var(--ink);
+    margin: 2em 0 0;
+}
+
+.rd-article strong { color: var(--em); font-weight: 600; }
+.rd-article em { font-family: var(--tc-serif); font-style: italic; font-size: 1.07em; }
+.rd-article i { background: rgba(var(--accent-rgb), 0.15); color: var(--em); padding: 1px 5px; border-radius: 4px; }
+
+.rd-article code {
+    font-family: var(--tc-mono);
+    font-size: 0.8em;
+    background: rgba(var(--line-rgb), 0.08);
+    border: 1px solid rgba(var(--line-rgb), 0.24);
+    border-radius: 5px;
+    padding: 2px 7px;
+    color: var(--mono-val);
+}
+.rd-article kbd {
+    font-family: var(--tc-mono);
+    font-size: 0.8em;
+    background: rgba(var(--line-rgb), 0.08);
+    border: 1px solid rgba(var(--line-rgb), 0.26);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 2px 8px;
+    color: var(--ink);
+}
+.rd-article pre {
+    background: rgba(var(--line-rgb), 0.06);
+    border: 1px solid rgba(var(--line-rgb), 0.18);
+    border-radius: 12px;
+    padding: 18px 22px;
+    overflow-x: auto;
+    font-size: 0.82em;
+    line-height: 1.6;
+}
+.rd-article pre code { background: none; border: 0; padding: 0; }
+
+/* Code blocks: the design's spec-card chrome — header bar with label,
+   language tag and copy button. Markup is built at mount in [id].vue. */
+.rd-article .rd-codeframe {
+    margin: 2em 0;
+    border: 1px solid rgba(var(--line-rgb), 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.rd-article .rd-codeframe > figcaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px 8px 16px;
+    margin: 0;
+    border-bottom: 1px solid rgba(var(--line-rgb), 0.14);
+    font-family: var(--tc-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-align: left;
+}
+.rd-codeframe-meta { display: flex; align-items: center; gap: 14px; color: var(--faint); }
+.rd-codeframe-meta button {
+    font-family: var(--tc-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    padding: 5px 12px;
+    border: 1px solid rgba(var(--line-rgb), 0.3);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
+}
+.rd-codeframe-meta button:hover { color: var(--ink); border-color: rgba(var(--line-rgb), 0.5); }
+.rd-article .rd-codeframe pre {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    padding: 16px 20px;
+    background: rgba(var(--line-rgb), 0.05);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--mono-val);
+}
+
+.rd-article blockquote {
+    position: relative;
+    border-left: 0;
+    margin: 2.6em auto;
+    padding: 0 0 0 clamp(30px, 6vw, 52px);
+    font-family: var(--tc-serif);
+    font-style: italic;
+    font-size: clamp(23px, 4.8vw, 29px);
+    line-height: 1.4;
+    color: var(--ink-hi);
+    text-wrap: pretty;
+}
+/* Oversized hanging quote mark in the accent tint — replaces the legacy red
+   glyph and left rule. */
+.rd-article blockquote::before {
+    content: '\201C';
+    position: absolute;
+    left: -4px;
+    top: -0.08em;
+    float: none;
+    width: auto;
+    height: auto;
+    margin: 0;
+    font: 400 2.4em/1 var(--tc-serif);
+    color: rgba(var(--accent-rgb), 0.5);
+}
+.rd-article blockquote p {
+    margin: 0 0 0.6em;
+    padding: 0;
+    font: inherit;
+    text-indent: 0;
+    text-align: left;
+}
+.rd-article blockquote cite,
+.rd-article blockquote p > strong:last-of-type {
+    display: block;
+    float: none;
+    margin: 18px 0 0;
+    padding: 0;
+    font-family: var(--tc-mono);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.rd-article img,
+.rd-article figure:not(.rd-codeframe) {
+    /* Images bleed out of the text column so they read larger. */
+    display: block;
+    width: min(920px, calc(100vw - 48px));
+    max-width: none;
+    height: auto;
+    margin: 56px 0 56px 50%;
+    transform: translateX(-50%);
+}
+.rd-article img {
+    border-radius: 12px;
+    border: 1px solid rgba(var(--line-rgb), 0.18);
+}
+.rd-article figure img { width: 100%; margin: 0; transform: none; }
+/* With the fixed contents rail on wide screens, cap the bleed so images
+   stay clear of it (rail ends ~284px from the left edge). */
+@media (min-width: 1280px) {
+    .rd-article img,
+    .rd-article figure:not(.rd-codeframe),
+    .rd-article .rd-demo {
+        width: max(100%, min(920px, calc(100vw - 620px)));
+    }
+    .rd-article figure img { width: 100%; }
+}
+
+/* Demo embeds: the design's LIVE PREVIEW block around article iframes —
+   label + device toggle, then a browser-window or phone-bezel frame.
+   Markup is built at mount in [id].vue around raw <iframe> from content. */
+.rd-article .rd-demo {
+    width: min(920px, calc(100vw - 48px));
+    margin: 56px 0 56px 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.rd-demo-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.rd-demo-label {
+    font-family: var(--tc-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: var(--dim);
+}
+.rd-demo-toggle {
+    display: flex;
+    border: 1px solid rgba(var(--line-rgb), 0.3);
+    border-radius: 999px;
+    overflow: hidden;
+}
+.rd-demo-toggle button {
+    font-family: var(--tc-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    padding: 8px 15px;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+    color: var(--dim);
+}
+.rd-demo-toggle button + button { border-left: 1px solid rgba(var(--line-rgb), 0.3); }
+.rd-demo-toggle button.rd-on { background: rgba(var(--accent-rgb), 0.22); color: var(--ink); }
+.rd-demo-open {
+    font-family: var(--tc-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--note-link);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(var(--line-rgb), 0.4);
+    padding-bottom: 2px;
+    background: none;
+    border-radius: 0;
+}
+.rd-article a.rd-demo-open { background: none; padding: 0 0 2px; }
+.rd-article a.rd-demo-open:hover { color: var(--ink); background: none; }
+.rd-article .rd-demoframe {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(var(--line-rgb), 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    background: var(--bg);
+}
+/* Phone bezel variant */
+.rd-phoneframe {
+    width: min(390px, 100%);
+    box-sizing: border-box;
+    background: #0b0b10;
+    border: 2px solid rgba(var(--line-rgb), 0.35);
+    border-radius: 48px;
+    padding: 12px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+.rd-phone-screen {
+    position: relative;
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--bg);
+    height: 700px;
+}
+.rd-phone-notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 108px;
+    height: 24px;
+    background: #0b0b10;
+    border-radius: 999px;
+    z-index: 2;
+}
+.rd-phone-screen iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: var(--bg);
+    margin: 0;
+}
+.rd-demoframe-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(var(--line-rgb), 0.2);
+    background: rgba(var(--line-rgb), 0.06);
+}
+.rd-demoframe-lights { display: flex; gap: 7px; flex: none; }
+.rd-demoframe-lights span { width: 11px; height: 11px; border-radius: 50%; }
+.rd-demoframe-lights span:nth-child(1) { background: #ff5f57; }
+.rd-demoframe-lights span:nth-child(2) { background: #febc2e; }
+.rd-demoframe-lights span:nth-child(3) { background: #28c840; }
+.rd-demoframe-bar a {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-family: var(--tc-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+}
+.rd-demoframe-bar a:hover { color: var(--ink); background: none; }
+.rd-demoframe-pad { width: 47px; flex: none; }
+.rd-article .rd-demoframe iframe {
+    width: 100%;
+    height: 600px;
+    border: 0;
+    display: block;
+    background: var(--bg);
+    margin: 0;
+}
+.rd-article figcaption {
+    margin-top: 12px;
+    font-family: var(--tc-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: right;
+}
+
+.rd-article hr { border: 0; height: 1px; background: rgba(var(--line-rgb), 0.16); margin: 64px 0; }
+
+/* Lists: square accent dots */
+.rd-article ul, .rd-article ol { list-style: none; padding: 0; margin: 1.6em 0; }
+.rd-article li { position: relative; padding-left: 26px; margin: 0 0 18px; line-height: 1.7; }
+.rd-article ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.52em;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    background: rgba(var(--accent-rgb), 0.22);
+    border: 1px solid rgba(var(--accent-rgb), 0.5);
+}
+.rd-article ol { counter-reset: rd-ol; }
+.rd-article ol li { counter-increment: rd-ol; }
+.rd-article ol li::before {
+    content: counter(rd-ol, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 0.28em;
+    font-family: var(--tc-mono);
+    font-size: 11px;
+    color: var(--num);
+    letter-spacing: 0.05em;
+}
+
+/* Tables: the dotted-leader spec card */
+.rd-article table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(var(--glow-rgb), 0.13);
+    border: 1px solid rgba(var(--accent-rgb), 0.18);
+    border-radius: 12px;
+    padding: clamp(12px, 3vw, 20px) clamp(16px, 4vw, 30px);
+    margin: 2em 0;
+    font-size: 13.5px;
+}
+.rd-article table th, .rd-article table td {
+    padding: 7px 0;
+    border-bottom: 1px dotted rgba(var(--line-rgb), 0.3);
+    text-align: left;
+    vertical-align: baseline;
+    line-height: 1.55;
+}
+.rd-article table tr:last-child th,
+.rd-article table tr:last-child td { border-bottom: 0; }
+.rd-article table td:first-child,
+.rd-article table th[scope="row"] {
+    font-weight: 600;
+    color: var(--label);
+    padding-right: 24px;
+    white-space: nowrap;
+}
+.rd-article table td:first-child strong { color: var(--label); }
+.rd-article table td:last-child {
+    font-family: var(--tc-mono);
+    color: var(--mono-val);
+    text-align: right;
+}
+.rd-article thead th {
+    font-family: var(--tc-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px dotted rgba(var(--line-rgb), 0.3);
+}
+.rd-article thead th:last-child { text-align: right; }
+.rd-article table p { margin: 0; }
+
+/* ---- theme pill (lives in the universal SiteFooter) --------------------- */
+/* Var fallbacks make it render correctly outside post pages too, where the
+   rd tokens are not defined. */
+.rd-theme-pill {
+    display: flex;
+    border: 1px solid rgba(var(--line-rgb, 38, 40, 39), 0.3);
+    /* Site-wide button language: hard corners, offset double-square frame. */
+    border-radius: 0;
+    box-shadow: -4px 4px 0 -2px var(--bg, #fff), -4px 4px 0 -1px rgba(var(--line-rgb, 38, 40, 39), 0.5);
+    overflow: hidden;
+}
+.rd-theme-pill button {
+    font-family: var(--tc-mono, ui-monospace, monospace);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    padding: 2px 18px;
+    line-height: 1.6;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+    color: var(--dim, #67726c);
+}
+.rd-theme-pill button + button { border-left: 1px solid rgba(var(--line-rgb, 38, 40, 39), 0.3); }
+.rd-theme-pill button.rd-on { background: rgba(var(--accent-rgb, 89, 99, 94), 0.22); color: var(--ink, #262827); }
+
+/* Footer N coin-flip (triggered by SiteFooter when the reader hits bottom) */
+@keyframes rd-n-flip {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(720deg); }
+}
+
+/* ---- motion preferences ------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+    .rd-hero-media { transform: translate3d(-50%, 0, 0) !important; }
+}

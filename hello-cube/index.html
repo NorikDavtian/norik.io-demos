@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello Cube · Norik.io Demos</title>
+  <script src="/shared/shell.js" defer></script>
+  <style>
+    canvas { display: block; margin: 24px auto; }
+  </style>
+</head>
+<body>
+  <main style="max-width: 720px; margin: 0 auto; padding: 24px; text-align: center;">
+    <h1 style="color: #fff; font-weight: 800;">Hello Cube</h1>
+    <p>Template demo block — copy this folder to start a new demo.</p>
+    <canvas id="c" width="320" height="320"></canvas>
+    <p style="font-family: ui-monospace, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;">
+      <a href="./index.html" download="hello-cube.html" style="color: #ece5fd; text-decoration: none; border-bottom: 1px dotted rgba(194, 184, 255, 0.4); padding-bottom: 2px;">Save this page — it is self-contained ↓</a>
+    </p>
+  </main>
+  <script>
+    // Tiny dependency-free spinning square as a stand-in for a real demo.
+    const ctx = document.getElementById('c').getContext('2d');
+    (function draw(t) {
+      ctx.clearRect(0, 0, 320, 320);
+      ctx.save();
+      ctx.translate(160, 160);
+      ctx.rotate(t / 1200);
+      ctx.strokeStyle = '#BB9AF7';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(-70, -70, 140, 140);
+      ctx.restore();
+      requestAnimationFrame(draw);
+    })(0);
+  </script>
+</body>
+</html>
